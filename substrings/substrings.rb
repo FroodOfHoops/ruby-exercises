@@ -1,7 +1,7 @@
 word_list = ["a","test","sample","words","egg","cat","foo","ni"]
 
 def substrings(a_string, dictionary)
-  my_array = a_string.split(" ")
+  my_array = a_string.downcase.split(" ")
   result = Hash.new(0)
   my_array.each do |x|
     dictionary.each do |y|
