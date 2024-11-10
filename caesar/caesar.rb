@@ -1,5 +1,5 @@
 def caesar(plain, shift)
-  cyph=""
+  cyph = ""
   p_text = plain.chomp.split("")
   p_text.each_with_index do |x, indx|
     x.ord
@@ -8,7 +8,7 @@ def caesar(plain, shift)
       ccord -= 26 if ccord > 90
     elsif x.ord >= 97 && x.ord <= 122
       ccord = x.ord + shift
-      ccord -=26 if ccord > 122
+      ccord -= 26 if ccord > 122
     else
       ccord = x.ord
     end
@@ -17,8 +17,6 @@ def caesar(plain, shift)
   # cyph.join("")
   cyph
 end
-
-
 
 puts "Enter string to be encoded:"
 plain = gets.chomp.to_s
