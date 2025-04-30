@@ -73,12 +73,10 @@ class Game
     else
       response = compare(guess, @answer)
       @played += 1
-      puts response
       puts grade(response)
       if response == [4,0]
         @winner += 1
       end
-      puts @winner
     end
   end
 
