@@ -37,13 +37,6 @@ class Game
       blackcount += [array1.count(color), array2.count(color)].min
     end
     blackcount -= whitecount
-#    4.times do |i|
-#      j = i-1
-#      if code1[j] != code2[j] && code2.include?(code1[j])
-#        blackcount += 1
-#        code2.sub!(code1[j], "")
-#      end
-#    end
     feedback = [whitecount, blackcount]
     return feedback
   end
@@ -85,7 +78,6 @@ class Game
     while @played < @@guesses && @winner == 0
       self.round()
     end
-#    @winner > 0 ? puts @@wintext : puts @@losetext + @answer + "\n"
     if @winner > 0
       puts @@wintext
     else
@@ -94,5 +86,109 @@ class Game
   end
 end
 
-game = Game.new
-game.play()
+# game = Game.new
+# game.play()
+
+class Game2
+  @@introtext = "(insert Mastermind rules here)\n" +
+  "Colors are B(lue), G(reen), O(range), P(urple), R(ed), and Y(ellow)\n"
+  @@guesses = 10
+  @@invite_feedback1 = "How many colours did I get in the right place?"
+  @@invite_feedback2 = "How many colours did I get in the wrong place?"
+  @@wintext = "Unless one of us has done something wrong, your code is: "
+  @@losetext = "I'm out of guesses, but I narrowed it down to "
+  @@errortext = "Something's gone wrong, there don't seem to be any valid options left. Oops!"
+
+  def initialize
+    self.make_list()
+    @played = 0
+    @guess = ""
+    @current_list = []
+    @full_list = []
+  end
+
+  def make_list()
+    @full_list = []
+    for i in 0..5 do
+      for j in 0..5 do
+        for k in 0..5 do
+          for l in 0..5 do
+            @full_list.push("#{$colors[i]}" + "#{$colors[j]}" + "#{$colors[k]}" + "#{$colors[l]}")
+          end
+        end
+      end
+    end
+    @current_list = @full_list
+  end
+
+  def cut_list(guess, feedback)
+    new_list = []
+    @current_list.each do |grid|
+      if compare(guess, grid) == feedback
+        new_list.push(grid)
+      end
+    end
+    @current_list = new_list
+  end
+
+  def compare(code1, code2)
+    whitecount = 0
+    blackcount = 0
+    array1 = code1.chars
+    array2 = code2.chars
+    4.times do |i|
+      j = i-1
+      whitecount += 1 if code1[j] == code2[j]
+    end
+    $colors.each do |color|
+      blackcount += [array1.count(color), array2.count(color)].min
+    end
+    blackcount -= whitecount
+    feedback = [whitecount, blackcount]
+    return feedback
+  end
+
+  def round()
+    if @current_list.length < 1
+      puts @@errortext
+      @played = @@guesses
+      return
+    end
+    if @current_list.length == 1
+      @played = @@guesses
+      return
+    end
+    if @guess == ""
+      @guess = @current_list.sample
+    end
+    puts "My guess is: " + @guess.to_s + "\n"
+    puts @@invite_feedback1
+    feedback1 = gets.chomp
+    puts @@invite_feedback2
+    feedback2 = gets.chomp
+    if ["0", "1", "2", "3", "4"].include?(feedback1) && ["0", "1", "2", "3", "4"].include?(feedback2)
+      self.cut_list(@guess, [feedback1.to_i, feedback2.to_i])
+      @played += 1
+      @guess = ""
+    else
+      puts "Both responses should be a number from 0 to 4!"
+    end
+  end
+
+  def play()
+    puts @@introtext
+    self.make_list()
+    while @played < @@guesses
+      self.round()
+    end
+    if @current_list.length == 1
+      puts @@wintext + @current_list[0]
+    else
+      puts @@losetext + @current_list.length.to_s + " possibilities!"
+    end
+  end
+
+end
+
+game2 = Game2.new
+game2.play()
